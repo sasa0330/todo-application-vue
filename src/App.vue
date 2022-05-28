@@ -274,7 +274,6 @@ export default {
 /* TODO一覧部分 */
 .todo_list {
   padding: 0 10px;
-  height: 100vh;
   width: calc(100vw - 20px);
   &__contents {
     border-bottom: solid 1px #999;
@@ -282,6 +281,7 @@ export default {
     display: flex;
   }
   &--empty{
+    height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
