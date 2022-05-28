@@ -3,30 +3,30 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.14.0/css/all.css"
       integrity="sha384-HzLeBuhoNPvSl5KYnjx0BT+WB0QEEqLprO+NBkkk5gbc67FTaL7XIGa2w1L0Xbgc" crossorigin="anonymous" />
     <div v-if="isOpenModal" class="modal">
-      <div class="modal--back_layer" @click="isOpenModal = false"></div>
-      <div class="modal--main_layer">
+      <div class="modal__back_layer" @click="isOpenModal = false"></div>
+      <div class="modal__main_layer">
         <div class="add_todo">
-          <input type="text" v-model="inputAdd" placeholder="edit me" class="add_todo--input" id="inputTodo" />
-          <button :disabled="isEmptyInputTodo" @click="addItem" class="add_todo--btn">
+          <input type="text" v-model="inputAdd" placeholder="edit me" class="add_todo__input" id="inputTodo" />
+          <button :disabled="isEmptyInputTodo" @click="addItem" class="add_todo__btn">
             追加
           </button>
         </div>
       </div>
     </div>
-    <div class="modal-btn">
-      <div @click="isOpenModal = false" v-if="isOpenModal">×</div>
-      <div @click="isOpenModal = true" v-if="!isOpenModal">＋</div>
+    <div class="modal_btn">
+      <div @click="isOpenModal = false" v-if="isOpenModal" class="modal_btn__text">×</div>
+      <div @click="isOpenModal = true" v-if="!isOpenModal" class="modal_btn__text">＋</div>
     </div>  
     <div class="todo_list">
-      <div v-for="(todo, index) in todos" :key="index" class="todo_list--contents">
+      <div v-for="(todo, index) in todos" :key="index" class="todo_list__contents">
         <div class="todo_text">
-          <div class="todo_text--wrap_text" v-if="!todo.isEditMode" @click="doneItem(index)">
-            <span class="todo_text--text" v-if="!todo.isDone">{{ todo.item }}</span>
-            <span class="todo_text--text__done" v-if="todo.isDone" style="text-decoration: line-through;">{{ todo.item }}</span>
+          <div class="todo_text__wrap_text" v-if="!todo.isEditMode" @click="doneItem(index)">
+            <span class="todo_text__text" v-if="!todo.isDone">{{ todo.item }}</span>
+            <span class="todo_text__text--done" v-if="todo.isDone" style="text-decoration: line-through;">{{ todo.item }}</span>
           </div>
           <input type="text" v-if="todo.isEditMode" class="input-todo-edit" :id="'editTextArea' + index" />
         </div>
-        <div class="todo_item--btn">
+        <div class="todo_item__btn">
           <div class="btn-left">
             <button @click="deleteItem(index)" class="btn delete" v-if="!todo.isEditMode">
               <i class="fas fa-trash-alt"></i>
@@ -177,7 +177,7 @@ export default {
     height: 100vh;
     top: 0;
     left: 0;
-  &--back_layer {
+  &__back_layer {
     position: fixed;
     top: 0;
     left: 0;
@@ -185,7 +185,7 @@ export default {
     height: 100vh;
     background-color: #DDDDDD33;
   }
-  &--main_layer {
+  &__main_layer {
     position: fixed;
     width: calc(100vw - 20px);
     height: 60vh;
@@ -196,13 +196,22 @@ export default {
   }
 }
 
-.modal-btn{
+.modal_btn{
   position: fixed;
+
   bottom: 10px;
   right: 10px;
   border-radius: 50%;
+  border: solid 1px #DDD;
   width: 50px;
   height: 50px;
+  &__text{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+  }
 }
 
 /* モーダルの中身 */
@@ -211,14 +220,14 @@ export default {
   display: flex;
   justify-content: space-between;
 
-  &--input {
+  &__input {
     @extend .base-input-text;
     width: 75%;
     height: 34px;
     display: inline-block;
   }
 
-  &--btn {
+  &__btn {
     @extend .reset-btn-style;
     width: 20%;
     height: 40px;
@@ -245,7 +254,7 @@ export default {
 .todo_list {
   padding: 0 10px;
   width: calc(100vw - 20px);
-  &--contents {
+  &__contents {
     border-bottom: solid 1px #999;
     padding: 10px;
     display: flex;
@@ -258,7 +267,7 @@ export default {
   &-wrap_text {
     width: 100%;
     display: block;
-    &--done_check:checked + &--text {
+    &--done_check:checked + &__text {
       text-decoration: line-through;
     }
   }
