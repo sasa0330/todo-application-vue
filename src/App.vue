@@ -6,18 +6,21 @@
       <div class="modal__back_layer" @click="isOpenModal = false"></div>
       <div class="modal__main_layer">
         <div class="add_todo">
-          <input type="text" v-model="inputAdd" placeholder="edit me" class="add_todo__input" id="inputTodo" />
-          <div :disabled="isEmptyInputTodo" @click="addItem" class="add_todo__btn">
-            追加
+          <textarea type="text" v-model="inputTodoText" placeholder="edit me" class="add_todo__input" id="inputTodo" />
+          <div class="add_todo__btn">
+              <div @click="isOpenModal = false" v-if="isOpenModal" class="add_todo__btn--cancel">キャンセル</div>
+              <div @click="addItem" class="add_todo__btn--add">追加</div>
           </div>
         </div>
       </div>
     </div>
-    <div class="modal_btn">
-      <div @click="isOpenModal = false" v-if="isOpenModal" class="modal_btn__text">×</div>
-      <div @click="isOpenModal = true" v-if="!isOpenModal" class="modal_btn__text">＋</div>
+    <div class="modal_btn" v-if="!isOpenModal">
+      <div @click="isOpenModal = true" class="modal_btn__text">＋</div>
     </div>  
-    <div class="todo_list">
+    <div class="todo_list todo_list--empty" v-show="!isExistTodo">
+      右下から追加してね
+    </div>
+    <div class="todo_list todo_list--exist" v-show="isExistTodo">
       <div v-for="(todo, index) in todos" :key="index" class="todo_list__contents">
         <div class="todo_text">
           <div class="todo_text__wrap_text" v-if="!todo.isEditMode" @click="doneItem(index)">
@@ -53,10 +56,10 @@
 export default {
   data: () => {
     return {
-      inputAdd: "",
-      isEmptyInputTodo: true,
-      isOpenModal: false,
-      todos: [],
+      todos: [],  //TODOリスト
+      inputTodoText: "",  //TODOを追加するときのテキスト
+      isEmptyInputTodoText: false,  //TODOの入力状態監視用
+      isOpenModal: false  //TODO入力モーダル開閉用
     };
   },
   created: function () {
@@ -71,29 +74,37 @@ export default {
       this.todos.push(todo);
     }
   },
+  computed:{
+    //todoリストの中身があればリスト部分を表示
+    isExistTodo:function(){
+      return this.todos.length > 0;
+    }
+  },
   watch: {
-    //TODO入力ボックスが空であればボタンdisable
-    inputAdd: function () {
-      if (this.inputAdd) {
-        this.isEmptyInputTodo = false;
-      } else {
-        this.isEmptyInputTodo = true;
+    //addItem()したときにテキストが空かを監視する
+    inputTodoText: function () {
+      if (!this.inputTodoText == "") {
+        this.isEmptyInputTodoText = true;
       }
-    },
+    }
   },
   methods: {
     /**
      * TODO追加
      */
     addItem() {
+      if(!this.isEmptyInputTodoText){
+        return false;
+      }
       let todo = {
-        item: this.inputAdd,
+        item: this.inputTodoText,
         isDone: false,
         isEditMode: false,
       };
       this.todos.push(todo);
       this.inputLocalStrage();
-      this.inputAdd = "";
+      this.inputTodoText = "";
+      this.isOpenModal = false;
     },
     /**
      * TODO削除
@@ -217,34 +228,40 @@ export default {
 /* モーダルの中身 */
 .add_todo {
   height: 40px;
-  display: flex;
-  justify-content: space-between;
-
   &__input {
     @extend .base-input-text;
-    width: 80%;
-    height: 34px;
+    width: 100%;
+    height: 100px;
     padding: 3px;
     display: block;
     border: solid 1px #DDD;
   }
-
   &__btn {
     @extend .reset-btn-style;
-    width: 15%;
-    margin-left: 5%;
+    width: 100%;
     height: 40px;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    background: #76ff03;
-    color: #fff;
-    font-weight: bold;
-    border-radius: 3px;
-    border-bottom: solid 2px #3e962f;
-    border-right: solid 2px #3e962f;
-
+    justify-content: space-between;
+    &--add{
+      width: 45%;
+      height: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #76ff03;
+      color: #fff;
+      font-weight: bold;
+    }
+    &--cancel{
+      width: 45%;
+      height: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #DDD;
+      color: #000;
+      font-weight: bold;
+    }
     &:active {
       /*ボタンを押したとき*/
       border: none;
@@ -257,11 +274,17 @@ export default {
 /* TODO一覧部分 */
 .todo_list {
   padding: 0 10px;
+  height: 100vh;
   width: calc(100vw - 20px);
   &__contents {
     border-bottom: solid 1px #999;
     padding: 10px;
     display: flex;
+  }
+  &--empty{
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 
