@@ -13,10 +13,10 @@
         </div>
       </div>
     </div>
-    <button class="modal-btn">
-      <span @click="isOpenModal = false" v-if="isOpenModal">×</span>
-      <span @click="isOpenModal = true" v-if="!isOpenModal">＋</span>
-    </button>  
+    <div class="modal-btn">
+      <div @click="isOpenModal = false" v-if="isOpenModal">×</div>
+      <div @click="isOpenModal = true" v-if="!isOpenModal">＋</div>
+    </div>  
     <div class="todo_list">
       <div v-for="(todo, index) in todos" :key="index" class="todo_list--contents">
         <div class="todo_text">
