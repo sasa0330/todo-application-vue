@@ -7,9 +7,9 @@
       <div class="modal__main_layer">
         <div class="add_todo">
           <input type="text" v-model="inputAdd" placeholder="edit me" class="add_todo__input" id="inputTodo" />
-          <button :disabled="isEmptyInputTodo" @click="addItem" class="add_todo__btn">
+          <div :disabled="isEmptyInputTodo" @click="addItem" class="add_todo__btn">
             追加
-          </button>
+          </div>
         </div>
       </div>
     </div>
@@ -222,17 +222,21 @@ export default {
 
   &__input {
     @extend .base-input-text;
-    width: 75%;
+    width: 80%;
     height: 34px;
-    display: inline-block;
+    padding: 3px;
+    display: block;
+    border: solid 1px #DDD;
   }
 
   &__btn {
     @extend .reset-btn-style;
-    width: 20%;
+    width: 15%;
+    margin-left: 5%;
     height: 40px;
-    display: inline-block;
-    padding: 0.5em 1em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-decoration: none;
     background: #76ff03;
     color: #fff;
