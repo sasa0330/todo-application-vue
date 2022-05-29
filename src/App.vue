@@ -27,32 +27,17 @@
     <div class="todo_list todo_list--exist" v-show="isExistTodo">
       <div v-for="(todo, index) in todos" :key="index" class="todo_list__contents">
         <div class="todo_text">
-          <div class="todo_text__wrap_text" v-if="!todo.isEditMode" @click="doneItem(index)">
+          <div class="todo_text__wrap_text" @click="doneItem(index)">
             <span class="todo_text__text" v-if="!todo.isDone">{{ todo.item }}</span>
             <span class="todo_text__text--done" v-if="todo.isDone" style="text-decoration: line-through;">{{ todo.item }}</span>
           </div>
-          <!--<input type="text" v-if="todo.isEditMode" class="input-todo-edit" :id="'editTextArea' + index" />-->
         </div>
-        <div class="todo_item__btn">
-          <div class="btn-left">
-            <button @click="deleteItem(index)" class="btn delete" v-if="!todo.isEditMode">
+        <div class="todo_btn">
+          <div class="todo_btn__left" @click="deleteItem(index)">
               <i class="fas fa-trash-alt"></i>
-            </button>
-            <!--
-            <button @click="editItem(index, 'cancel')" v-if="todo.isEditMode" class="btn cancel">
-              <i class="fas fa-window-close"></i>
-            </button>
-            -->
           </div>
-          <div class="btn-right">
-            <button v-if="!todo.isEditMode" @click="editItem(index, 'edit')" class="btn">
+          <div class="todo_btn__right" @click="editItem(index, 'edit')">
               <i class="fas fa-pencil-alt"></i>
-            </button>
-            <!--
-            <button v-if="todo.isEditMode" @click="editItem(index, 'confirm')" class="btn">
-              <i class="fas fa-check-circle"></i>
-            </button>
-            -->
           </div>
         </div>
       </div>
@@ -78,7 +63,6 @@ export default {
       let todo = {
         item: jsObj[i].item,
         isDone: jsObj[i].isDone,
-        isEditMode: false,
       };
       this.todos.push(todo);
     }
@@ -113,8 +97,7 @@ export default {
       }
       let todo = {
         item: this.inputTodoText,
-        isDone: false,
-        isEditMode: false,
+        isDone: false
       };
       this.todos.push(todo);
       this.inputLocalStrage();
@@ -309,7 +292,7 @@ export default {
 }
 
 .todo_text {
-  width: 70%;
+  width: 80%;
   word-break: break-all;
   &-wrap_text {
     width: 100%;
@@ -326,36 +309,29 @@ export default {
   }
 }
 
-.todo_item-btn {
-  width: 30%;
+.todo_btn {
+  width: 20%;
   display: flex;
   justify-content: space-between;
   align-items: center;
 
-  .btn-left {
-    width: 45%;
-
-    .btn {
-      @extend .reset-btn-style;
-      width: 100%;
-      height: 30px;
-      border: solid 2px #999;
-      border-radius: 5px;
-      color: #999;
-    }
+  &__left {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+    border: solid 1px #999;
+    border-radius: 5px;
   }
-
-  .btn-right {
-    width: 45%;
-
-    .btn {
-      @extend .reset-btn-style;
-      width: 100%;
-      height: 30px;
-      border: solid 2px #999;
-      color: #76ff03;
-      border-radius: 5px;
-    }
+  &__right {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+    border: solid 1px #999;
+    border-radius: 5px;
   }
 }
 </style>
