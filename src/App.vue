@@ -8,11 +8,11 @@
         <div class="add_todo">
           <textarea type="text" v-model="inputTodoText" placeholder="edit me" class="add_todo__input" id="inputTodo" />
           <div class="add_todo__btn" v-if="isEditIndex == -1">
-              <div @click="addItem('cancel')" class="add_todo__btn--cancel">キャンセル</div>
+              <div @click="editCalcel()" class="add_todo__btn--cancel">キャンセル</div>
               <div @click="addItem('add')" class="add_todo__btn--add">追加</div>
           </div>
           <div class="add_todo__btn" v-if="isEditIndex > -1">
-              <div @click="editItem(index, 'cancel')" class="add_todo__btn--cancel">編集キャンセル</div>
+              <div @click="editCalcel()" class="add_todo__btn--cancel">編集キャンセル</div>
               <div @click="editItem(index, 'confirm')" class="add_todo__btn--add">編集</div>
           </div>
         </div>
@@ -142,10 +142,6 @@ export default {
           this.inputTodoText = this.todos[index].item;
           break;
         }
-        case "cancel": {
-          this.editCalcel();
-          break;
-        }
         case "confirm": {
           this.todos[this.isEditIndex].item = this.inputTodoText;
           this.editCalcel();
@@ -232,11 +228,11 @@ export default {
 
 .modal_btn{
   position: fixed;
-
   bottom: 10px;
   right: 10px;
   border-radius: 50%;
   border: solid 1px #DDD;
+  background-color: #FFF;
   width: 50px;
   height: 50px;
   &__text{
