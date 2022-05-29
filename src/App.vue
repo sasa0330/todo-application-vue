@@ -7,9 +7,13 @@
       <div class="modal__main_layer">
         <div class="add_todo">
           <textarea type="text" v-model="inputTodoText" placeholder="edit me" class="add_todo__input" id="inputTodo" />
-          <div class="add_todo__btn">
-              <div @click="isOpenModal = false" v-if="isOpenModal" class="add_todo__btn--cancel">キャンセル</div>
-              <div @click="addItem" class="add_todo__btn--add">追加</div>
+          <div class="add_todo__btn" v-if="isEditIndex == -1">
+              <div @click="addItem('cancel')" class="add_todo__btn--cancel">キャンセル</div>
+              <div @click="addItem('add')" class="add_todo__btn--add">追加</div>
+          </div>
+          <div class="add_todo__btn" v-if="isEditIndex > -1">
+              <div @click="editItem(index, 'cancel')" class="add_todo__btn--cancel">編集キャンセル</div>
+              <div @click="editItem(index, 'confirm')" class="add_todo__btn--add">編集</div>
           </div>
         </div>
       </div>
@@ -27,24 +31,28 @@
             <span class="todo_text__text" v-if="!todo.isDone">{{ todo.item }}</span>
             <span class="todo_text__text--done" v-if="todo.isDone" style="text-decoration: line-through;">{{ todo.item }}</span>
           </div>
-          <input type="text" v-if="todo.isEditMode" class="input-todo-edit" :id="'editTextArea' + index" />
+          <!--<input type="text" v-if="todo.isEditMode" class="input-todo-edit" :id="'editTextArea' + index" />-->
         </div>
         <div class="todo_item__btn">
           <div class="btn-left">
             <button @click="deleteItem(index)" class="btn delete" v-if="!todo.isEditMode">
               <i class="fas fa-trash-alt"></i>
             </button>
+            <!--
             <button @click="editItem(index, 'cancel')" v-if="todo.isEditMode" class="btn cancel">
               <i class="fas fa-window-close"></i>
             </button>
+            -->
           </div>
           <div class="btn-right">
             <button v-if="!todo.isEditMode" @click="editItem(index, 'edit')" class="btn">
               <i class="fas fa-pencil-alt"></i>
             </button>
+            <!--
             <button v-if="todo.isEditMode" @click="editItem(index, 'confirm')" class="btn">
               <i class="fas fa-check-circle"></i>
             </button>
+            -->
           </div>
         </div>
       </div>
@@ -58,8 +66,9 @@ export default {
     return {
       todos: [],  //TODOリスト
       inputTodoText: "",  //TODOを追加するときのテキスト
-      isEmptyInputTodoText: false,  //TODOの入力状態監視用
-      isOpenModal: false  //TODO入力モーダル開閉用
+      isEmptyInputTodoText: true,  //TODOの入力状態監視用
+      isOpenModal: false,  //TODO入力モーダル開閉用
+      isEditIndex: -1 //編集中TODOのIndex。何もしていないときは-1
     };
   },
   created: function () {
@@ -83,17 +92,23 @@ export default {
   watch: {
     //addItem()したときにテキストが空かを監視する
     inputTodoText: function () {
-      if (!this.inputTodoText == "") {
-        this.isEmptyInputTodoText = true;
-      }
+        //空ならtrue
+        this.isEmptyInputTodoText = this.inputTodoText == "";
     }
   },
   methods: {
     /**
      * TODO追加
+     * @param {string} addState - 編集ボタンの状態
      */
-    addItem() {
-      if(!this.isEmptyInputTodoText){
+    addItem(addState) {
+      //TODO追加キャンセル時
+      if(addState == "cancel"){
+        this.isOpenModal = false;
+        return false;
+      }
+      //テキストボックスに何も値がないときは追加させない
+      if(this.isEmptyInputTodoText){
         return false;
       }
       let todo = {
@@ -122,22 +137,25 @@ export default {
     editItem(index, editState) {
       switch (editState) {
         case "edit": {
-          this.todos[index].isEditMode = true;
+          this.isOpenModal = true;
+          this.isEditIndex = index;
+          this.inputTodoText = this.todos[index].item;
           break;
         }
         case "cancel": {
-          this.todos[index].isEditMode = false;
+          this.isOpenModal = false;
+          this.inputTodoText = "";
+          this.isEditIndex = -1;
           break;
         }
         case "confirm": {
-          let afterText = document.getElementById("editTextArea" + index).value;
-          if (afterText) {
-            this.todos[index].item = afterText;
-          }
-          this.todos[index].isEditMode = false;
+          this.todos[this.isEditIndex].item = this.inputTodoText;
+          this.isOpenModal = false;
+          this.inputTodoText = "";
+          this.isEditIndex = -1;
           break;
         }
-      }
+       }
       this.inputLocalStrage();
     },
     /**
@@ -199,8 +217,8 @@ export default {
   &__main_layer {
     position: fixed;
     width: calc(100vw - 20px);
-    height: 60vh;
-    top: 40vh;
+    height: 40vh;
+    top: 60vh;
     left: 0;
     padding: 10px;
     background-color: #FFF;
@@ -233,6 +251,7 @@ export default {
     width: 100%;
     height: 100px;
     padding: 3px;
+    margin-bottom: 30px;
     display: block;
     border: solid 1px #DDD;
   }
