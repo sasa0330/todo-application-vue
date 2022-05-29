@@ -3,7 +3,7 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.14.0/css/all.css"
       integrity="sha384-HzLeBuhoNPvSl5KYnjx0BT+WB0QEEqLprO+NBkkk5gbc67FTaL7XIGa2w1L0Xbgc" crossorigin="anonymous" />
     <div v-if="isOpenModal" class="modal">
-      <div class="modal__back_layer" @click="isOpenModal = false"></div>
+      <div class="modal__back_layer" @click="editCalcel()"></div>
       <div class="modal__main_layer">
         <div class="add_todo">
           <textarea type="text" v-model="inputTodoText" placeholder="edit me" class="add_todo__input" id="inputTodo" />
@@ -143,16 +143,12 @@ export default {
           break;
         }
         case "cancel": {
-          this.isOpenModal = false;
-          this.inputTodoText = "";
-          this.isEditIndex = -1;
+          this.editCalcel();
           break;
         }
         case "confirm": {
           this.todos[this.isEditIndex].item = this.inputTodoText;
-          this.isOpenModal = false;
-          this.inputTodoText = "";
-          this.isEditIndex = -1;
+          this.editCalcel();
           break;
         }
        }
@@ -169,6 +165,15 @@ export default {
         this.todos[index].isDone = true;
       }
       this.inputLocalStrage();
+    },
+    /**
+     *追加や編集を辞めて初期化するメソッド
+     */
+    editCalcel(){
+      //やりたいこと：テキスト入力されていたら、警告したい。
+      this.isOpenModal = false;
+      this.inputTodoText = "";
+      this.isEditIndex = -1;
     },
     /**
      * ローカルストレージにデータ格納
